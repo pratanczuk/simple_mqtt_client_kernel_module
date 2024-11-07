@@ -31,8 +31,6 @@
 
 static struct task_struct *client_thread_st;
 
-#define MQTT_QOS0 0x00
-
 /**
  * Encodes the MQTT "Remaining Length" field according to MQTT specifications.
  *
