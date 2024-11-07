@@ -145,7 +145,7 @@ static int mqtt_connect_message(uint8_t *buffer, const char *client_id, const ch
  * This function constructs an MQTT PUBLISH message according to the MQTT 3.1.1 specification.
  * The message includes the topic and optional payload, with variable header fields and flags.
  */
-static int mqtt_publish_message(uint8_t *buffer, const char *topic, const uint8_t *payload, int payload_len, uint8_t qos, uint8_t retain) {
+static int mqtt_publish_message(uint8_t *buffer, const char *topic, const char *payload, int payload_len, uint8_t qos, uint8_t retain) {
     int index = 0;
     int topic_len = strlen(topic);
 
@@ -204,9 +204,10 @@ static int mqtt_client_thread(void *data)
     struct kvec vec;
     struct msghdr msg;
     char *topic = "kernel/test";
+    char *client_id = "ME";
     char *user = "user";
     char *password = "password";
-    char *message = "Hello from kernel module!";
+    const char *message = "Hello from kernel module!";
     uint8_t qos = 1; // Quality of Service level 1
     uint8_t retain = 0; // Do not retain the message
 
@@ -241,13 +242,9 @@ static int mqtt_client_thread(void *data)
     int packet_len;
 
     // With username and password
-    packet_len = mqtt_connect_message(packet, "ME", user, password);
-
-    // Without username and password
-    //connect_len = mqtt_connect_message(connect_packet, "ME", NULL, NULL);
+    packet_len = mqtt_connect_message(packet, client_id, user, password);
 
     /* Send CONNECT packet */
-
     memset(&vec, 0, sizeof(vec));
     memset(&msg, 0, sizeof(msg));
     vec.iov_base = packet;
@@ -266,7 +263,7 @@ static int mqtt_client_thread(void *data)
 
 
     // Call the mqtt_publish_message function
-    packet_len = mqtt_publish_message(packet, topic, (const uint8_t *)message, strlen(message), qos, retain);
+    packet_len = mqtt_publish_message(packet, topic, message, strlen(message), qos, retain);
 
     memset(&vec, 0, sizeof(vec));
     memset(&msg, 0, sizeof(msg));
