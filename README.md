@@ -48,4 +48,4 @@ Check `dmesg` to verify that the client has connected to the broker and sent a p
 
 To unload the module, use:
 
-`sudo rmmod mqtt_client
+`sudo rmmod mqtt_client`
